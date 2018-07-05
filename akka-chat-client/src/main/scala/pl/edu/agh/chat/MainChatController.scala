@@ -3,36 +3,22 @@ package pl.edu.agh.chat
 import java.net.URL
 import java.util.ResourceBundle
 
-import javafx.application.Platform
-import javafx.fxml.{FXML, Initializable}
-import javafx.scene.control.{Label, TextArea, TextField}
-import pl.edu.agh.chat.Views.{Hostname, Name, Port}
+import scalafx.application.Platform
+import scalafx.event.ActionEvent
+import scalafx.scene.control.{Label, TextArea, TextField}
+import scalafxml.core.macros.sfxml
 
-class MainChatController extends Initializable {
-  @FXML
-  var messagesText: TextArea = _
+@sfxml
+class MainChatController (private var messagesText: TextArea,
+                          private var insertText: TextField,
+                          private var roomName: Label,
+                          private var userName: Label,
+                          private var isActive: Boolean = false ) {
 
-  @FXML
-  var insertText: TextField = _
-
-  @FXML
-  var roomName: Label = _
-
-  @FXML
-  var userName: Label = _
-
-  override def initialize(url: URL, resourceBundle: ResourceBundle): Unit = {
-    Main.client.url = Hostname.display
-    Main.client.port = Port.display
-    Main.client.name = Name.display
-    Main.client.connect()
-    roomName.setText("Hello!")
-    userName.setText(Main.client.name)
-  }
-
-  @FXML
-  def sendMessage(): Unit = {
+  def sendMessage(event: ActionEvent): Unit = {
+    if (!isActive) readMessages()
     if (!insertText.getText().equals("")) {
+      println(insertText.getText)
       try {
         Main.client.sendMessage(insertText.getText())
       } catch {
@@ -43,10 +29,13 @@ class MainChatController extends Initializable {
   }
 
   def readMessages(): Unit = {
+    isActive = true
     val thread = new Thread(() => {
       while(!Main.client.socket.isClosed) {
         val x = Main.client.receiveMessage()
+        println(x)
         if (x != null)
+          messagesText.appendText("\n")
           messagesText.appendText(x)
       }
     })

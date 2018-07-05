@@ -1,10 +1,10 @@
 package pl.edu.agh.chat.Views
 
-import javafx.geometry.Pos
-import javafx.scene.Scene
-import javafx.scene.control.{Button, Label, TextField}
-import javafx.scene.layout.VBox
-import javafx.stage.{Modality, Stage}
+import scalafx.geometry.Pos
+import scalafx.stage.{Modality, Stage}
+import scalafx.scene.control.{Button, Label, TextField}
+import scalafx.scene.layout.VBox
+import scalafx.scene.Scene
 
 class Hostname {
 }

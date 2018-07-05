@@ -1,17 +1,17 @@
 package pl.edu.agh.chat
 
-import java.io.{BufferedReader, IOException, InputStreamReader, PrintStream}
+import java.io._
 import java.net.Socket
 
-class Client(var name: String = "", var socket: Socket = null, var os: PrintStream = null,
+class Client(var name: String = "", var socket: Socket = null, var os: PrintWriter = null,
              var is: BufferedReader = null, var port: Int = 0, var url: String = null) {
 
   def connect(): Unit = {
     try {
       this.socket = new Socket(url, port)
-      this.os = new PrintStream(this.socket.getOutputStream)
+      this.os = new PrintWriter(this.socket.getOutputStream, true)
       this.is = new BufferedReader(new InputStreamReader(this.socket.getInputStream))
-      this.os.print(this.name)
+      this.os.println(Main.client.name)
     } catch {
       case ioe: IOException =>
         ioe.printStackTrace()
@@ -21,7 +21,7 @@ class Client(var name: String = "", var socket: Socket = null, var os: PrintStre
   }
 
   def sendMessage(string: String): Unit = {
-    this.os.print(string)
+    this.os.println(string)
   }
 
   def receiveMessage(): String = {
